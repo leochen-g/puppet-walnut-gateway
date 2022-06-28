@@ -1,6 +1,7 @@
 export const Api = {
   accessToken: '/accessToken',
   revokeMessage: '/revoke',
-  sendMessage: '/messages',
-  uploadFile: '/medias/upload',
+  sendMessage: '/sendMessage',
+  uploadFile: '/media/upload',
+  downloadFile: '/media/download',
 }

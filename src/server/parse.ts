@@ -1,6 +1,9 @@
 import PuppetWalnut from '../puppet-walnut.js'
 import type { WalnutMessagePayload } from '../help/struct.js'
 import { log } from '../config.js'
+import { downloadFile } from "../help/request.js";
+import Dayjs from "dayjs";
+import {fileTypeFromBuffer} from 'file-type';
 
 function notifyAuthorization (ctx: any) {
   log.silly('notifyAuthorization', JSON.stringify(ctx.request))
@@ -12,12 +15,47 @@ function notifyAuthorization (ctx: any) {
   ctx.response.body = {}
 }
 
-function parseMessage (ctx: any) {
-  log.silly('parseMessage', JSON.stringify(ctx.request.body))
-  const message: WalnutMessagePayload = ctx.request.body
-  void PuppetWalnut.getCacheManager().setMessage(message.messageId, message)
-  const phone = message.senderAddress.replace('tel:+86', '')
-  void PuppetWalnut.getCacheManager().setContact(phone, {
+async function parseMessage (ctx: any) {
+  log.info('parseMessage', JSON.stringify(ctx.request.body))
+  const ignoreMessage = ['sharedData', 'action']
+  if(ignoreMessage.includes(ctx.request.body.action)){
+    return
+  }
+  let messageItem = 'text'
+  if(ctx.request.body.action === 'file') {
+    const fileInfo = JSON.parse(ctx.request.body.messageData)
+    console.log('fileInfo', fileInfo)
+    const fileId = fileInfo.fileID
+    console.log('fileId', fileId)
+    const fileBuffer = await downloadFile(fileId)
+    const mime = await fileTypeFromBuffer(fileBuffer)
+    console.log('mime', mime)
+    if(mime) {
+      if(mime.ext === 'vcf') {
+        messageItem = 'vcf'
+      } else if(mime.mime.includes('image')) {
+        messageItem = 'image'
+      } else if(mime.mime.includes('audio')) {
+        messageItem = 'audio'
+      } else if(mime.mime.includes('video')) {
+        messageItem = 'video'
+      } else {
+        messageItem = 'other'
+      }
+    }
+  }
+  if(ctx.request.body.action === 'text' && ctx.request.body.messageData.includes('geo:')) {
+    messageItem = 'location'
+  }
+  const message: WalnutMessagePayload = {
+    ...ctx.request.body,
+    messageItem,
+    destinationAddress: PuppetWalnut.chatbotId,
+    dateTime: Dayjs().format('YYYY-MM-DD HH:mm:ss')
+  }
+  await PuppetWalnut.cacheManager.setMessage(message.messageId, message)
+  const phone = message.sender
+  await PuppetWalnut.cacheManager.setContact(phone, {
     name: phone,
     phone: phone,
   })

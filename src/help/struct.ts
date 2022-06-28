@@ -5,12 +5,24 @@ export interface FileItem {
   type: string,
   until: string,
   url: string,
+  fileTid: string,
+  thumbnailTid?: string | ''
 }
 
 export interface MessageItem {
-  contentEncoding: string,
-  contentText: string | FileItem[] | {},
-  contentType: string
+  messageType: string,
+  text?: string,
+  suggestions?: SuggestionItem[],
+  media?: [],
+  thumbnailId?: string,
+  fileId?: string
+}
+
+export interface SuggestionItem {
+  type: string,
+  displayText: string,
+  postbackData: string,
+  actionParams: {}
 }
 
 export enum MessageRawType {
@@ -19,7 +31,15 @@ export enum MessageRawType {
   location = 'location',
   audio = 'audio',
   video = 'video',
+  contact = 'vcf',
   other = 'other'
+}
+export enum ActionRawType {
+  shareData = 'shareData',
+  action = 'action',
+  reply = 'reply',
+  text = 'text',
+  file = 'file'
 }
 
 export interface WalnutMessagePayload {
@@ -32,7 +52,10 @@ export interface WalnutMessagePayload {
   messageId: string,
   messageItem: MessageRawType,
   messageList: MessageItem[],
-  senderAddress: string
+  senderAddress: string,
+  sender: string,
+  messageData: string,
+  action: ActionRawType
 }
 
 export interface WalnutContactPayload {

@@ -35,22 +35,13 @@ const puppet = new PuppetWalnut({
 
 test('message parser for text message', async t => {
   const walnutMessagePayload = {
-    messageId: '4BF4F950-A0B6-4CC3-86B4-5A9580399BCA',
-    messageList: [
-      {
-        contentType: 'text/plain',
-        contentText: 'hello world',
-        contentEncoding: 'utf8',
-      },
-    ],
-    messageFileSize: 0,
-    messageItem: 'text',
-    dateTime: '2020-01-17T14:42:20.840+08:00',
-    destinationAddress: 'sip:106500@botplatform.rcs.domain.cn',
-    senderAddress: 'tel:+8617928222350',
-    conversationId: 'XSFDSFDFSAFDSAS^%',
-    contributionId: 'SFF$#REGFY7&^%THT',
-  }
+    "action": "file",
+    "messageId": "AC6A9C00-78C8-4BCC-9845-0F3BDCBE45EE",
+    "messageData": "{\"thumbnailId\": \"62ba6b30e4b0210122c7acd5\",\"fileId\":\"62ba6b30e4b0210122c7acd5\"}",
+    "conversationId": "11659C10-78C8-4BCC-9845-0F3BDCBE466E",
+    "contributionId": "7C6A9C00-78C8-6BCC-9845-0F3BDCBE45AE",
+    "sender": "17928222350"
+}
   const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload as WalnutMessagePayload)
   t.ok(
     messagePayload.listenerId === 'sip:106500@botplatform.rcs.domain.cn'
@@ -63,35 +54,12 @@ test('message parser for text message', async t => {
 
 test('message parser for image message', async t => {
   const walnutMessagePayload = {
-    messageId: '4BF4F950-A0B6-4CC3-86B4-5A9580399BCA',
-    messageList: [
-      {
-        contentType: 'application/vnd.gsma.rcs-ft-http',
-        contentText: [{
-          type: 'thumbnail',
-          fileSize: '7427',
-          fileName: 'DSC_379395051.JPG',
-          contentType: 'image/jpg',
-          url: 'http://xxxxx74f0. jpg',
-          until: '2019-04-25T12:17:07Z',
-        }, {
-          type: 'file',
-          fileSize: '183524',
-          fileName: 'DSC_379395051.JPG',
-          contentType: 'image/jpg',
-          url: 'http://xxxxxx6c5274f0. jpg',
-          until: '2019-04-25T12:17:07Z',
-        }],
-        contentEncoding: 'utf8',
-      },
-    ],
-    messageFileSize: 0,
-    messageItem: 'image',
-    dateTime: '2020-01-17T14:42:20.840+08:00',
-    destinationAddress: 'sip:106500@botplatform.rcs.domain.cn',
-    senderAddress: 'tel:+8617928222350',
-    conversationId: 'XSFDSFDFSAFDSAS^%',
-    contributionId: 'SFF$#REGFY7&^%THT',
+    "action": "sharedData",
+    "messageId": "AC6A9C00-78C8-4BCC-9845-0F3BDCBE45EE",
+    "messageData": "{\"deviceModel\": \"OnePlus 7 Pro\",\"platformVersion\": \"AndroId-9.1.2\",\"clientVendor\": \"VNDR\",\"clientVersion\": \"RCSAndrd-1.0\",\"batteryRemainingMinutes\": 517}",
+    "conversationId": "11659C10-78C8-4BCC-9845-0F3BDCBE466E",
+    "contributionId": "7C6A9C00-78C8-6BCC-9845-0F3BDCBE45AE",
+    "sender": "18297987006"
   }
   const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload as WalnutMessagePayload)
   t.ok(
@@ -104,36 +72,13 @@ test('message parser for image message', async t => {
 })
 
 test('message parser for file message', async t => {
-  const walnutMessagePayload = {
-    messageId: '4BF4F950-A0B6-4CC3-86B4-5A9580399BCA',
-    messageList: [
-      {
-        contentType: 'application/vnd.gsma.rcs-ft-http',
-        contentText: [{
-          type: 'thumbnail',
-          fileSize: '7427',
-          fileName: 'DSC_379395051.JPG',
-          contentType: 'image/jpg',
-          url: 'http://xxxxx74f0. jpg',
-          until: '2019-04-25T12:17:07Z',
-        }, {
-          type: 'file',
-          fileSize: '183524',
-          fileName: 'DSC_379395051.JPG',
-          contentType: 'image/jpg',
-          url: 'http://xxxxxx6c5274f0. jpg',
-          until: '2019-04-25T12:17:07Z',
-        }],
-        contentEncoding: 'utf8',
-      },
-    ],
-    messageFileSize: 0,
-    messageItem: 'other',
-    dateTime: '2020-01-17T14:42:20.840+08:00',
-    destinationAddress: 'sip:106500@botplatform.rcs.domain.cn',
-    senderAddress: 'tel:+8617928222350',
-    conversationId: 'XSFDSFDFSAFDSAS^%',
-    contributionId: 'SFF$#REGFY7&^%THT',
+  const walnutMessagePayload ={
+    "action": "file",
+    "messageId": "AC6A9C00-78C8-4BCC-9845-0F3BDCBE45EE",
+    "messageData": "{\"thumbnailId\": \"62ba6b30e4b0210122c7acd5\",\"fileId\":\"62ba6b30e4b0210122c7acd5\"}",
+    "conversationId": "11659C10-78C8-4BCC-9845-0F3BDCBE466E",
+    "contributionId": "7C6A9C00-78C8-6BCC-9845-0F3BDCBE45AE",
+    "sender": "17928222350"
   }
   const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload as WalnutMessagePayload)
   t.ok(

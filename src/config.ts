@@ -6,9 +6,9 @@ const config = {
   // Contact's default avatar url
   avatarUrl: 'https://raw.githubusercontent.com/wechaty/puppet-walnut/main/docs/images/avatar.webp',
   // The port for the sever to receive message
-  port: 3000,
+  port: 3001,
   // The server's root url
-  serverRoot: 'maap.5g-msg.com:30001',
+  serverRoot: 'oapi.5g-msg.com:31001',
 }
 
 enum contentEncoding {
