@@ -110,7 +110,6 @@ export async function downloadFile (fileId:string): Promise<Buffer> {
     responseType: 'arraybuffer',
     url: PuppetWalnut.baseUrl + Api.downloadFile,
   }).then(res => {
-    console.log(JSON.stringify(res.data));
     return res.data
   })
 }

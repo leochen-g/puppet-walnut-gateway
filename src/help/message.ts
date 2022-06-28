@@ -3,7 +3,7 @@ import { Api } from './api.js'
 import { v4 as uuidV4 } from 'uuid'
 import { contentEncoding, log } from '../config.js'
 import type { FileBoxInterface } from 'file-box'
-import type { MessageItem } from './struct.js'
+import type { MessageItem, SuggestionItem } from './struct.js'
 import type * as PUPPET from 'wechaty-puppet'
 export function sendTextMessage (contactId: string, msg: string) {
   sendMessage(contactId, {
@@ -12,25 +12,27 @@ export function sendTextMessage (contactId: string, msg: string) {
   })
 }
 
-export function sendLocationMessage (contactId: string, locationPayload: PUPPET.payloads.Location) {
+export function sendLocationMessage (contactId: string, locationPayload: PUPPET.payloads.Location, suggestion?: SuggestionItem[]) {
   log.info(JSON.stringify(locationPayload))
   sendMessage(contactId, {
     messageType: 'text',
     text: 'geo:50.7311865,7.0914591;crs=gcj02;u=10;rcs-l=Qingfeng%20Steamed%20Dumpling%20Shop %20%F0%9F%8D%9A',
+    suggestions: suggestion || []
   })
 }
 
-export async function sendFileMessage (contactId: string, file: FileBoxInterface) {
+export async function sendFileMessage (contactId: string, file: FileBoxInterface, suggestion?: SuggestionItem[]) {
   const fileItem = await uploadFile(file)
 
   sendMessage(contactId, {
     messageType: 'file',
     fileId: fileItem.fileTid,
-    thumbnailId: fileItem.thumbnailTid
+    thumbnailId: fileItem.thumbnailTid,
+    suggestions: suggestion || []
   })
 }
 
-export async function sendPostMessage (contactId: string, postPayload: PUPPET.payloads.Post) {
+export async function sendPostMessage (contactId: string, postPayload: PUPPET.payloads.Post, suggestion?: SuggestionItem[]) {
   const title = postPayload.sayableList[0] as PUPPET.payloads.Sayable
   const description = postPayload.sayableList[1] as PUPPET.payloads.Sayable
   const img = postPayload.sayableList[2] as PUPPET.payloads.Sayable
@@ -41,32 +43,18 @@ export async function sendPostMessage (contactId: string, postPayload: PUPPET.pa
 
   const msg = {
     messageType: 'card',
-    contentEncoding: contentEncoding.utf8,
-    contentText: {
-      message: {
-        generalPurposeCard: {
-          content: {
-            description: description.payload.text,
-            media: {
-              height: 'MEDIUM_HEIGHT',
-              mediaContentType: fileItem.contentType,
-              mediaFileSize: fileItem.fileSize,
-              mediaUrl: fileItem.url,
-            },
-            title: title.payload.text,
-          },
-          layout: {
-            cardOrientation: 'HORIZONTAL',
-            descriptionFontStyle: ['calibri'],
-            imageAlignment: 'LEFT',
-            titleFontStyle: ['underline', 'bold'],
-          },
-        },
-      },
-    },
-    contentType: 'application/vnd.gsma.botmessage.v1.0+json',
+    media: [
+      {
+        mediaId: fileItem.fileTid,
+        thumnailId: fileItem.thumbnailTid,
+        height: "MEDIUM_HEIGHT",
+        contentDescription: description.payload.text,
+        title: title.payload.text,
+        description: description.payload.text,
+        suggestions: suggestion
+      }
+    ],
   }
-
   sendMessage(contactId, msg)
 }
 

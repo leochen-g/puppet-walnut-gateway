@@ -24,12 +24,9 @@ async function parseMessage (ctx: any) {
   let messageItem = 'text'
   if(ctx.request.body.action === 'file') {
     const fileInfo = JSON.parse(ctx.request.body.messageData)
-    console.log('fileInfo', fileInfo)
     const fileId = fileInfo.fileID
-    console.log('fileId', fileId)
     const fileBuffer = await downloadFile(fileId)
     const mime = await fileTypeFromBuffer(fileBuffer)
-    console.log('mime', mime)
     if(mime) {
       if(mime.ext === 'vcf') {
         messageItem = 'vcf'
