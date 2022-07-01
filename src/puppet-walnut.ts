@@ -24,7 +24,7 @@ import { config, log, VERSION } from './config.js'
 import { initToken, updateToken, downloadFile } from './help/request.js'
 import type { WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
 import { MessageRawType } from './help/struct.js'
-import { sendFileMessage, sendLocationMessage, sendMessage, sendPostMessage, sendTextMessage } from './help/message.js'
+import { sendFileMessage, sendLocationMessage,  sendPostMessage, sendTextMessage } from './help/message.js'
 import { CacheManager } from './cache/cacheManager.js'
 
 import { checkPhoneNumber } from './help/utils.js'
@@ -39,6 +39,7 @@ export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
 }
 
 class PuppetWalnut extends PUPPET.Puppet {
+
   static port: number
   static sipId: string
   static appId: string
@@ -69,7 +70,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async onStart (): Promise<void> {
 
-    await initServer(PuppetWalnut.port, PuppetWalnut.notifyUrlPrefix + '/' +PuppetWalnut.chatbotId )
+    await initServer(PuppetWalnut.port, PuppetWalnut.notifyUrlPrefix + '/' + PuppetWalnut.chatbotId)
 
     await PuppetWalnut.cacheManager.init()
 
@@ -230,7 +231,7 @@ class PuppetWalnut extends PUPPET.Puppet {
     const messagePayload = await this.messageRawPayload(messageId)
     const fileId = messagePayload && JSON.parse(messagePayload.messageData)
     const fileStream = await downloadFile(fileId)
-    if (!fileId || !fileStream) {
+    if (!fileId) {
       throw new Error('Wrong message structs!')
     }
     if (imageType === PUPPET.types.Image.Thumbnail) {
@@ -244,10 +245,11 @@ class PuppetWalnut extends PUPPET.Puppet {
     const messagePayload = await this.messageRawPayload(messageId)
     const fileId = messagePayload && JSON.parse(messagePayload.messageData)
     const fileStream = await downloadFile(fileId)
-    if (!fileId || !fileStream) {
+    if (!fileId) {
       throw new Error('Wrong message structs!')
     }
-    if (messagePayload?.messageItem === MessageRawType.video) {
+    // @ts-ignore
+    if (messagePayload.messageItem === MessageRawType.video) {
       return FileBox.fromBuffer(fileStream)
     }
     return FileBox.fromBuffer(fileStream)
@@ -258,7 +260,7 @@ class PuppetWalnut extends PUPPET.Puppet {
     const messagePayload = await this.messageRawPayload(messageId)
     const fileId = messagePayload && JSON.parse(messagePayload.messageData)
     const fileStream = await downloadFile(fileId)
-    if (!fileId || !fileStream) {
+    if (!fileId) {
       throw new Error('Wrong message structs!')
     }
     const contact = await FileBox.fromBuffer(fileStream).toBuffer()
@@ -280,16 +282,6 @@ class PuppetWalnut extends PUPPET.Puppet {
   override async messageSendFile (conversationId: string, file: FileBoxInterface): Promise<void> {
     log.verbose('PuppetWalnut', 'messageSendFile(%s, %s)', conversationId, file)
     await sendFileMessage(conversationId, file)
-  }
-
-  override async messageForward (conversationId: string, messageId: string): Promise<void> {
-    log.verbose('PuppetWalnut', 'messageForward(%s, %s)', conversationId, messageId)
-    const message = await PuppetWalnut.cacheManager.getMessage(messageId)
-    if (message && message.messageList[0]) {
-      sendMessage(conversationId, message.messageList[0])
-    } else {
-      throw new Error('Message is Empty!')
-    }
   }
 
   /**

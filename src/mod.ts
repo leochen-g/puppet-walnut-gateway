@@ -1,12 +1,15 @@
 import { VERSION } from './version.js'
 import PuppetWalnut from './puppet-walnut.js'
 import { uploadFile, downloadFile } from './help/request.js'
-import { sendMessage } from './help/message.js'
+import { sendMessage, sendTextMessage, sendPostMessage, sendFileMessage } from './help/message.js'
 export {
   VERSION,
   PuppetWalnut,
   sendMessage,
   uploadFile,
-  downloadFile
+  downloadFile,
+  sendTextMessage,
+  sendPostMessage,
+  sendFileMessage,
 }
 export default PuppetWalnut

@@ -11,6 +11,7 @@ import { log } from '../config.js'
 const PRE = 'CacheManager'
 
 class CacheManager {
+
   /**
    * ************************************************************************
    *                Instance Methods
@@ -26,7 +27,7 @@ class CacheManager {
    * ************************************************************************
    */
 
-   async init () {
+  async init () {
     log.verbose(PRE, 'init()')
     if (this.cacheMessageRawPayload) {
       throw new Error('PayloadStore should be stop() before start() again.')
@@ -39,7 +40,7 @@ class CacheManager {
       'puppet-walnut-cache',
       path.sep,
       PuppetWalnut.sipId,
-      path.sep
+      path.sep,
     )
     if (!fs.existsSync(baseDir)) {
       fs.mkdirSync(baseDir, { recursive: true })
@@ -139,5 +140,6 @@ class CacheManager {
     payload!.name = alias
     await this.cacheContactRawPayload.set(contactId, payload!)
   }
+
 }
 export { CacheManager }

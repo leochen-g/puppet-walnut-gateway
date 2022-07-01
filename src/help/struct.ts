@@ -1,30 +1,41 @@
 export interface FileItem {
-  contentType: string,
-  fileName: string,
-  fileSize: string,
-  type: string,
-  until: string,
-  url: string,
+  url?: string,
   fileTid: string,
   thumbnailTid?: string | ''
-}
-
-export interface MessageItem {
-  messageType: string,
-  text?: string,
-  suggestions?: SuggestionItem[],
-  media?: [],
-  thumbnailId?: string,
-  fileId?: string
 }
 
 export interface SuggestionItem {
   type: string,
   displayText: string,
   postbackData: string,
-  actionParams: {}
+  actionParams?: {}
 }
 
+export interface MediaItem {
+  mediaId: string,
+  thumnailId: string | undefined,
+  height: string,
+  contentDescription: string| undefined,
+  title: string| undefined,
+  description: string| undefined,
+  suggestions?: SuggestionItem[],
+}
+
+export interface MessageItem {
+  messageType: string,
+  text?: string,
+  suggestions?: SuggestionItem[],
+  media?: MediaItem[],
+  thumbnailId?: string,
+  fileId?: string
+}
+
+export interface UserSuggestionItem {
+  type: string,
+  displayText: string,
+  content: string,
+  label?: string
+}
 export enum MessageRawType {
   image = 'image',
   text = 'text',
@@ -44,18 +55,15 @@ export enum ActionRawType {
 
 export interface WalnutMessagePayload {
   // refer to: https://github.com/fabian4/puppet-walnut/blob/main/docs/%E6%8E%A5%E5%8F%A3%E8%A7%84%E8%8C%83.md#30
-  contributionId: string,
+  action: ActionRawType
   conversationId: string,
+  contributionId: string,
   dateTime: string,
   destinationAddress: string,
-  messageFileSize: number,
   messageId: string,
   messageItem: MessageRawType,
-  messageList: MessageItem[],
-  senderAddress: string,
-  sender: string,
   messageData: string,
-  action: ActionRawType
+  sender: string,
 }
 
 export interface WalnutContactPayload {
