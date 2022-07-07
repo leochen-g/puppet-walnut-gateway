@@ -72,7 +72,7 @@ export function updateToken () {
   })
 }
 
-export async function uploadFile (file: FileBoxInterface): Promise<FileItem> {
+export async function uploadFile (file: FileBoxInterface, isSingle?: boolean): Promise<FileItem> {
   const stream = await file.toStream()
   const options = {
     formData: {
@@ -88,7 +88,7 @@ export async function uploadFile (file: FileBoxInterface): Promise<FileItem> {
           contentType: null,
           filename: file.name,
         },
-        value: stream,
+        value: isSingle? '': stream,
       },
     },
     headers: {

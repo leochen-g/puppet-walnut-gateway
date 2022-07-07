@@ -65,7 +65,7 @@ export function sendLocationMessage (contactId: string, locationPayload: PUPPET.
 }
 
 export async function sendFileMessage (contactId: string, file: FileBoxInterface, suggestion?: UserSuggestionItem[]) {
-  const fileItem = await uploadFile(file)
+  const fileItem = await uploadFile(file, true)
 
   sendMessage(contactId, {
     fileId: fileItem.fileTid,
@@ -96,6 +96,41 @@ export async function sendPostMessage (contactId: string, postPayload: PUPPET.pa
         title: title.payload.text,
       },
     ],
+    messageType: 'card',
+  }
+  sendMessage(contactId, msg)
+}
+
+/**
+ * 发送多卡片内容
+ * @param contactId
+ * @param postPayloads
+ * @param suggestion
+ */
+
+export async function sendMorePostMessage (contactId: string, postPayloads: PUPPET.payloads.Post[], suggestion?: UserSuggestionItem[]) {
+  const media = []
+  for(let i =0; i< postPayloads.length; i++) {
+    const postPayload = postPayloads[i]
+    const title = postPayload?.sayableList[0] as PUPPET.payloads.Sayable
+    const description = postPayload?.sayableList[1] as PUPPET.payloads.Sayable
+    const img = postPayload?.sayableList[2] as PUPPET.payloads.Sayable
+    if (title.type !== 'Text' || description.type !== 'Text' || img.type !== 'Attachment') {
+      throw new Error('Wrong Post!!! please check your Post payload to make sure it right')
+    }
+    const fileItem = await uploadFile((<FileBoxInterface>img.payload.filebox))
+    media.push({
+        contentDescription: description.payload.text,
+        description: description.payload.text,
+        height: 'MEDIUM_HEIGHT',
+        mediaId: fileItem.fileTid,
+        suggestions: formatSuggestion(suggestion),
+        thumnailId: fileItem.thumbnailTid,
+        title: title.payload.text,
+      })
+  }
+  const msg = {
+    media,
     messageType: 'card',
   }
   sendMessage(contactId, msg)
