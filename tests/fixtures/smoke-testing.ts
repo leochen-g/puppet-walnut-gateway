@@ -3,8 +3,7 @@
 import {
   PuppetWalnut,
   VERSION,
-}                 from 'wechaty-puppet-walnut'
-
+}                 from 'wechaty-puppet-walnut-gateway'
 
 async function main () {
   const puppet = new PuppetWalnut({
