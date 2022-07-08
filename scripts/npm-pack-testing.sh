@@ -28,21 +28,21 @@ npm install --production ./*-*.*.*.tgz \
 #
 # CommonJS
 #
-./node_modules/.bin/tsc \
-  --target es6 \
-  --module CommonJS \
-  \
-  --moduleResolution node \
-  --esModuleInterop \
-  --lib esnext \
-  --noEmitOnError \
-  --noImplicitAny \
-  --skipLibCheck \
-  smoke-testing.ts
-
-echo
-echo "CommonJS: pack testing..."
-node smoke-testing.js
+#./node_modules/.bin/tsc \
+#  --target es6 \
+#  --module CommonJS \
+#  \
+#  --moduleResolution node \
+#  --esModuleInterop \
+#  --lib esnext \
+#  --noEmitOnError \
+#  --noImplicitAny \
+#  --skipLibCheck \
+#  smoke-testing.ts
+#
+#echo
+#echo "CommonJS: pack testing..."
+#node smoke-testing.js
 
 #
 # ES Modules
