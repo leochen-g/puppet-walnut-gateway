@@ -1,3 +1,5 @@
+import type * as PUPPET from 'wechaty-puppet'
+
 export interface FileItem {
   url?: string,
   fileTid: string,
@@ -69,4 +71,9 @@ export interface WalnutMessagePayload {
 export interface WalnutContactPayload {
   name: string
   phone: string
+}
+
+export interface MediaCardItem {
+  postPayload:  PUPPET.payloads.Post,
+  suggestions?: UserSuggestionItem [],
 }

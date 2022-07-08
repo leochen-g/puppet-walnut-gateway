@@ -1,6 +1,6 @@
 {
   "name": "wechaty-puppet-walnut-gateway",
-  "version": "1.0.8",
+  "version": "1.0.1",
   "description": "Puppet Walnut Gateway for Wechaty",
   "type": "module",
   "exports": {
@@ -44,12 +44,12 @@
     "puppet",
     "mock"
   ],
-  "author": "Huan LI <zixia@zixia.net>",
+  "author": "Leo_chen <leo.gengchen@foxmail.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/wechaty/puppet-walnut-gateway/issues"
+    "url": "https://github.com/leochen-g/puppet-walnut-gateway/issues"
   },
-  "homepage": "https://github.com/wechaty/puppet-walnut-gateway#readme",
+  "homepage": "https://github.com/leochen-g/puppet-walnut-gatewayreadme",
   "devDependencies": {
     "@chatie/eslint-config": "^1.0.4",
     "@chatie/git-scripts": "^0.6.2",
@@ -78,6 +78,7 @@
     "koa-body": "^4.2.0",
     "koa-router": "^10.1.1",
     "lru-cache": "^6.0.0",
+    "request": "^2.88.2",
     "uuid": "^8.3.2",
     "vcard4": "^2.4.0"
   },

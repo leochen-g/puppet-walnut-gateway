@@ -1,0 +1,480 @@
+{
+	"info": {
+		"_postman_id": "b9ccc3ec-8754-44ed-92d4-a5143d285f86",
+		"name": "硬核桃社区网关",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "5.1获取访问token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"var timeNonce = \"20201208013659abcdef\";\r",
+							"str = pm.environment.get('appId') +  pm.environment.get('appKey') +  timeNonce;\r",
+							"var signature = CryptoJS.SHA256(str);\r",
+							"\r",
+							"console.log(\"str:\"+ str);\r",
+							"console.log(\"signature:\"+ signature);\r",
+							"\r",
+							"pm.globals.set(\"timeNonce\", timeNonce );\r",
+							"pm.globals.set(\"signature\", \"\"+signature);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var acquiretoken = JSON.parse(responseBody);\r",
+							"pm.globals.set(\"accessToken\",acquiretoken.data.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"appId\": \"{{appId}}\",\r\n\t\"nonce\": \"{{timeNonce}}\",\r\n\t\"signature\": \"{{signature}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{oapiUrl}}/walnut/v1/accessToken",
+					"host": [
+						"{{oapiUrl}}"
+					],
+					"path": [
+						"walnut",
+						"v1",
+						"accessToken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.2发送文件消息",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accessToken",
+						"value": "{{accessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"contributionId\": \"cb1188a3-37ec-1037-9054-2dc66e443752\",\r\n\t\"conversationId\": \"cb1188a3-37ec-1037-9054-2dc66e443752\",\r\n\t\"messageType\": \"file\",\r\n\t\"clientCorrelator\": \"12313\",\r\n\t\"destinationAddress\": [\r\n\t\t\"{{sender}}\"\r\n\t],\r\n\t\"smsSupported\": true,\r\n\t\"storeSupported\": false,\r\n\t\"smsContent\": \"hello world!\",\r\n\t\"content\": {\r\n\t\t\"thumbnailId\": \"6274de24e4b0dfe4fd2306be\",\r\n\t\t\"fileId\": \"6274de24e4b0dfe4fd2306bd\",\r\n\t\t\"suggestions\": [\r\n\t\t\t{\r\n\t\t\t\t\"type\": \"reply\",\r\n\t\t\t\t\"displayText\": \"统一\",\r\n\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_yes\"\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"type\": \"urlAction\",\r\n\t\t\t\t\"displayText\": \"大佬\",\r\n\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_yes\",\r\n\t\t\t\t\"actionParams\": {\r\n\t\t\t\t\t\"url\": \"https://baidu.com\",\r\n\t\t\t\t\t\"application\": \"webview\",\r\n\t\t\t\t\t\"viewMode\": \"full\"\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{oapiUrl}}/walnut/v1/sendMessage",
+					"host": [
+						"{{oapiUrl}}"
+					],
+					"path": [
+						"walnut",
+						"v1",
+						"sendMessage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.3发送卡片消息",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accessToken",
+						"value": "{{accessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"contributionId\": \"cb1188a3-37ec-1037-9054-2dc66e443752\",\r\n\t\"conversationId\": \"cb1188a3-37ec-1037-9054-2dc66e443732\",\r\n\t\"clientCorrelator\": \"b1188a337\",\r\n    \"messageType\": \"card\",\r\n\t\"destinationAddress\": [\r\n\t\t\"{{sender}}\"\r\n\t],\r\n\t\"smsSupported\": true,\r\n\t\"storeSupported\": false,\r\n\t\"smsContent\": \"hello world!\",\r\n\t\"content\": {\r\n\t\t\"media\": [\r\n\t\t\t{\r\n\t\t\t\t\"mediaId\": \"6274de24e4b0dfe4fd2306bd\",\r\n\t\t\t\t\"thumnailId\": \"6274de24e4b0dfe4fd2306be\",\r\n\t\t\t\t\"height\": \"MEDIUM_HEIGHT\",\r\n\t\t\t\t\"contentDescription\": \"武动乾坤\",\r\n\t\t\t\t\"title\": \"凛冬\",\r\n\t\t\t\t\"description\": \"小狼\",\r\n\t\t\t\t\"suggestions\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"type\": \"audioAction\",\r\n\t\t\t\t\t\t\"displayText\": \"录音\",\r\n\t\t\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_audio\",\r\n\t\t\t\t\t\t\"actionParams\": {\r\n\t\t\t\t\t\t\t\"phoneNumber\": \"1650253000\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t},\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"type\": \"calendarAction\",\r\n\t\t\t\t\t\t\"displayText\": \"打开日历\",\r\n\t\t\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_calendar\",\r\n\t\t\t\t\t\t\"actionParams\": {\r\n\t\t\t\t\t\t\t\"startTime\": \"2020-07-20T08:00:00Z\",\r\n\t\t\t\t\t\t\t\"endTime\": \"2020-07-20T09:00:00Z\",\r\n\t\t\t\t\t\t\t\"title\": \"Meeting\",\r\n\t\t\t\t\t\t\t\"description\": \"GSG review meeting\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t},\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"type\": \"deviceAction\",\r\n\t\t\t\t\t\t\"displayText\": \"共享设备\",\r\n\t\t\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_dev\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"mediaId\": \"6274de24e4b0dfe4fd2306bd\",\r\n\t\t\t\t\"thumnailId\": \"6274de24e4b0dfe4fd2306be\",\r\n\t\t\t\t\"height\": \"MEDIUM_HEIGHT\",\r\n\t\t\t\t\"contentDescription\": \"一念永恒\",\r\n\t\t\t\t\"title\": \"白小纯\",\r\n\t\t\t\t\"description\": \"师傅\",\r\n\t\t\t\t\"suggestions\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"type\": \"dialerAction\",\r\n\t\t\t\t\t\t\"displayText\": \"打电话\",\r\n\t\t\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_dialer\",\r\n\t\t\t\t\t\t\"actionParams\": {\r\n\t\t\t\t\t\t\t\"phoneNumber\": \"1650253000\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t},\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"type\": \"composeTextAction\",\r\n\t\t\t\t\t\t\"displayText\": \"发短信\",\r\n\t\t\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_dialer\",\r\n\t\t\t\t\t\t\"actionParams\": {\r\n\t\t\t\t\t\t\t\"phoneNumber\": \"tel:+8618980557864\",\r\n\t\t\t\t\t\t\t\"text\": \"chatbot短信\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"mediaId\": \"6274de24e4b0dfe4fd2306bd\",\r\n\t\t\t\t\"thumnailId\": \"6274de24e4b0dfe4fd2306be\",\r\n\t\t\t\t\"height\": \"MEDIUM_HEIGHT\",\r\n\t\t\t\t\"contentDescription\": \"紫川\",\r\n\t\t\t\t\"title\": \"冰雪\",\r\n\t\t\t\t\"description\": \"紫川秀\",\r\n\t\t\t\t\"suggestions\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"type\": \"mapAction\",\r\n\t\t\t\t\t\t\"displayText\": \"发送位置\",\r\n\t\t\t\t\t\t\"postbackData\": \"set_by_chatbot_action_location\",\r\n\t\t\t\t\t\t\"actionParams\": {\r\n\t\t\t\t\t\t\t\"latitude\": 39.93869082848235,\r\n\t\t\t\t\t\t\t\"label\": \"测试打开地图\",\r\n\t\t\t\t\t\t\t\"url\": \"\",\r\n\t\t\t\t\t\t\t\"longitude\": 116.41441791625674\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t},\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"type\": \"dialVideoAction\",\r\n\t\t\t\t\t\t\"displayText\": \"打视频电话\",\r\n\t\t\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_dialer\",\r\n\t\t\t\t\t\t\"actionParams\": {\r\n\t\t\t\t\t\t\t\"phoneNumber\": \"1650253000\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t},\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"type\": \"audioAction\",\r\n\t\t\t\t\t\t\"displayText\": \"录音\",\r\n\t\t\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_audio\",\r\n\t\t\t\t\t\t\"actionParams\": {\r\n\t\t\t\t\t\t\t\"phoneNumber\": \"1650253000\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"suggestions\": [\r\n\t\t\t{\r\n\t\t\t\t\"type\": \"reply\",\r\n\t\t\t\t\"displayText\": \"统一\",\r\n\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_yes\"\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"type\": \"urlAction\",\r\n\t\t\t\t\"displayText\": \"大佬\",\r\n\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_yes\",\r\n\t\t\t\t\"actionParams\": {\r\n\t\t\t\t\t\"url\": \"https://baidu.com\",\r\n\t\t\t\t\t\"application\": \"webview\",\r\n\t\t\t\t\t\"viewMode\": \"full\"\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{oapiUrl}}/walnut/v1/sendMessage",
+					"host": [
+						"{{oapiUrl}}"
+					],
+					"path": [
+						"walnut",
+						"v1",
+						"sendMessage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.4发送文本消息",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accessToken",
+						"value": "{{accessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"contributionId\": \"cb1188a3-37ec-1037-9054-2dc66e443752\",\r\n\t\"conversationId\": \"cb1188a3-37ec-1037-9054-2dc66e443752\",\r\n\t\"clientCorrelator\": \"e443752\",\r\n    \"messageType\": \"text\",\r\n\t\"destinationAddress\": [\r\n\t\t\"{{sender}}\"\r\n\t],\r\n\t\"smsSupported\": true,\r\n\t\"smsContent\": \"短信回落\",\r\n\t\"content\": {\r\n\t\t\"text\": \"欢迎您来到5G消息硬核桃社区！！！！\",\r\n\t\t\"suggestions\": [\r\n\t\t\t{\r\n\t\t\t\t\"type\": \"reply\",\r\n\t\t\t\t\"displayText\": \"YES\",\r\n\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_yes\"\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"type\": \"urlAction\",\r\n\t\t\t\t\"displayText\": \"YES\",\r\n\t\t\t\t\"postbackData\": \"set_by_chatbot_reply_yes\",\r\n\t\t\t\t\"actionParams\": {\r\n\t\t\t\t\t\"url\": \"https://baidu.com\",\r\n\t\t\t\t\t\"application\": \"webview\",\r\n\t\t\t\t\t\"viewMode\": \"full\"\r\n\t\t\t\t}\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{oapiUrl}}/walnut/v1/sendMessage",
+					"host": [
+						"{{oapiUrl}}"
+					],
+					"path": [
+						"walnut",
+						"v1",
+						"sendMessage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.5发送消息状态回传",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var nonce = \"abcdef\";\r",
+							"var timestamp = \"202205061608\";\r",
+							"\r",
+							"str = pm.environment.get('token') +  timestamp + nonce;\r",
+							"var signature = CryptoJS.SHA256(str);\r",
+							"pm.globals.set(\"upSignature\", signature);\r",
+							"pm.globals.set(\"nonce\", nonce);\r",
+							"pm.globals.set(\"timestamp\", timestamp);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "nonce",
+						"value": "{{nonce}}",
+						"type": "text"
+					},
+					{
+						"key": "timestamp",
+						"value": "{{timestamp}}",
+						"equals": false
+					},
+					{
+						"key": "signature",
+						"value": "{{upSignature}}",
+						"equals": false
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"deliveryInfoList\": [\r\n\t\t{\r\n\t\t\t\"messageId\": \"AC6A9C00-78C8-4BCC-9845-0F3BDCBE45EE\",\r\n\t\t\t\"status\": \"delivered\",\r\n\t\t\t\"sender\": \"17928222350\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"messageId\": \"AC6A9C00-78C8-4BCC-9845-0F3BDCBE45EE\",\r\n\t\t\t\"status\": \"delivered\",\r\n\t\t\t\"sender\": \"17928222351\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"messageId\": \"4566A9C00-5562-4BCC-9845-0F3BDCBE4FEF\",\r\n\t\t\t\"status\": \"failed\",\r\n\t\t\t\"errorCode\": \"1\",\r\n\t\t\t\"errorMessage\": \"terminal not supported RCS and smsSupported is false\",\r\n\t\t\t\"sender\": \"17928222351\"\r\n\t\t}\r\n\t]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{callbackUrl}}/{{chatbotId}}/delivery/status",
+					"host": [
+						"{{callbackUrl}}"
+					],
+					"path": [
+						"{{chatbotId}}",
+						"delivery",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.6上行消息",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var nonce = \"abcdef\";\r",
+							"var timestamp = \"202205061608\";\r",
+							"\r",
+							"str = pm.environment.get('token') +  timestamp + nonce;\r",
+							"var signature = CryptoJS.SHA256(str);\r",
+							"pm.globals.set(\"upSignature\", signature);\r",
+							"pm.globals.set(\"nonce\", nonce);\r",
+							"pm.globals.set(\"timestamp\", timestamp);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "nonce",
+						"value": "{{nonce}}",
+						"type": "text"
+					},
+					{
+						"key": "timestamp",
+						"value": "{{timestamp}}",
+						"equals": false
+					},
+					{
+						"key": "signature",
+						"value": "{{upSignature}}",
+						"equals": false
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"action\": \"sharedData\",\r\n        \"messageId\": \"AC6A9C00-78C8-4BCC-9845-0F3BDCBE45EE\",\r\n        \"messageData\": \"{\\\"deviceModel\\\": \\\"OnePlus 7 Pro\\\",\\\"platformVersion\\\": \\\"AndroId-9.1.2\\\",\\\"clientVendor\\\": \\\"VNDR\\\",\\\"clientVersion\\\": \\\"RCSAndrd-1.0\\\",\\\"batteryRemainingMinutes\\\": 517}\",\r\n        \"conversationId\": \"11659C10-78C8-4BCC-9845-0F3BDCBE466E\",\r\n        \"contributionId\": \"7C6A9C00-78C8-6BCC-9845-0F3BDCBE45AE\",\r\n        \"sender\": \"17928222350\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{callbackUrl}}/{{chatbotId}}/delivery/message",
+					"host": [
+						"{{callbackUrl}}"
+					],
+					"path": [
+						"{{chatbotId}}",
+						"delivery",
+						"message"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.7上传素材",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accessToken",
+						"value": "{{accessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/D:/sknDesktop/5G.jpg"
+						},
+						{
+							"key": "thumbnail",
+							"type": "file",
+							"src": "/D:/sknDesktop/5G.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{oapiUrl}}/walnut/v1/media/upload",
+					"host": [
+						"{{oapiUrl}}"
+					],
+					"path": [
+						"walnut",
+						"v1",
+						"media",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.8素材可用通知",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var nonce = \"abcdef\";\r",
+							"var timestamp = \"202205061608\";\r",
+							"\r",
+							"str = pm.environment.get('token') +  timestamp + nonce;\r",
+							"var signature = CryptoJS.SHA256(str);\r",
+							"pm.globals.set(\"upSignature\", signature);\r",
+							"pm.globals.set(\"nonce\", nonce);\r",
+							"pm.globals.set(\"timestamp\", timestamp);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "nonce",
+						"value": "{{nonce}}",
+						"type": "text"
+					},
+					{
+						"key": "timestamp",
+						"value": "{{timestamp}}",
+						"equals": false
+					},
+					{
+						"key": "signature",
+						"value": "{{upSignature}}",
+						"equals": false
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fileId\": \"6274ddf5e4b0dfe4fd2306ba\",\r\n    \"useable\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{callbackUrl}}/{{chatbotId}}/delivery/mediaStatus",
+					"host": [
+						"{{callbackUrl}}"
+					],
+					"path": [
+						"{{chatbotId}}",
+						"delivery",
+						"mediaStatus"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.9文件下载",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accessToken",
+						"value": "{{accessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"tid\": \"6274ddf5e4b0dfe4fd2306ba\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{oapiUrl}}/walnut/v1/media/download",
+					"host": [
+						"{{oapiUrl}}"
+					],
+					"path": [
+						"walnut",
+						"v1",
+						"media",
+						"download"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5.10素材删除",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accessToken",
+						"value": "{{accessToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"tid\": \"6274ddf5e4b0dfe4fd2306ba\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{oapiUrl}}/walnut/v1/media/delete",
+					"host": [
+						"{{oapiUrl}}"
+					],
+					"path": [
+						"walnut",
+						"v1",
+						"media",
+						"delete"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

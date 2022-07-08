@@ -3,7 +3,7 @@ import { Api } from './api.js'
 import { v4 as uuidV4 } from 'uuid'
 import { log } from '../config.js'
 import type { FileBoxInterface } from 'file-box'
-import type { MessageItem, SuggestionItem, UserSuggestionItem } from './struct.js'
+import type { MediaCardItem, MessageItem, SuggestionItem, UserSuggestionItem } from './struct.js'
 import type * as PUPPET from 'wechaty-puppet'
 
 function formatSuggestion (list?: UserSuggestionItem[] | undefined) {
@@ -104,14 +104,15 @@ export async function sendPostMessage (contactId: string, postPayload: PUPPET.pa
 /**
  * 发送多卡片内容
  * @param contactId
- * @param postPayloads
+ * @param medias
  * @param suggestion
  */
 
-export async function sendMorePostMessage (contactId: string, postPayloads: PUPPET.payloads.Post[], suggestion?: UserSuggestionItem[]) {
+export async function sendMorePostMessage (contactId: string, medias: MediaCardItem[], suggestion?: UserSuggestionItem[]) {
   const media = []
-  for(let i =0; i< postPayloads.length; i++) {
-    const postPayload = postPayloads[i]
+  for (let i = 0; i < medias.length; i++) {
+    const mediaItem = medias[i]
+    const postPayload = mediaItem?.postPayload
     const title = postPayload?.sayableList[0] as PUPPET.payloads.Sayable
     const description = postPayload?.sayableList[1] as PUPPET.payloads.Sayable
     const img = postPayload?.sayableList[2] as PUPPET.payloads.Sayable
@@ -120,18 +121,19 @@ export async function sendMorePostMessage (contactId: string, postPayloads: PUPP
     }
     const fileItem = await uploadFile((<FileBoxInterface>img.payload.filebox))
     media.push({
-        contentDescription: description.payload.text,
-        description: description.payload.text,
-        height: 'MEDIUM_HEIGHT',
-        mediaId: fileItem.fileTid,
-        suggestions: formatSuggestion(suggestion),
-        thumnailId: fileItem.thumbnailTid,
-        title: title.payload.text,
-      })
+      contentDescription: description.payload.text,
+      description: description.payload.text,
+      height: 'MEDIUM_HEIGHT',
+      mediaId: fileItem.fileTid,
+      suggestions: formatSuggestion(mediaItem?.suggestions),
+      thumnailId: fileItem.thumbnailTid,
+      title: title.payload.text,
+    })
   }
   const msg = {
     media,
     messageType: 'card',
+    suggestions: formatSuggestion(suggestion),
   }
   sendMessage(contactId, msg)
 }

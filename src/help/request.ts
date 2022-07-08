@@ -88,7 +88,7 @@ export async function uploadFile (file: FileBoxInterface, isSingle?: boolean): P
           contentType: null,
           filename: file.name,
         },
-        value: isSingle? '': stream,
+        value: isSingle ? '' : stream,
       },
     },
     headers: {

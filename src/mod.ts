@@ -11,6 +11,6 @@ export {
   sendTextMessage,
   sendPostMessage,
   sendFileMessage,
-  sendMorePostMessage
+  sendMorePostMessage,
 }
 export default PuppetWalnut
