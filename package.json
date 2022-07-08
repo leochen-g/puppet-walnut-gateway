@@ -1,6 +1,6 @@
 {
   "name": "wechaty-puppet-walnut-gateway",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Puppet Walnut Gateway for Wechaty",
   "type": "module",
   "exports": {
