@@ -65,7 +65,7 @@ export function sendLocationMessage (contactId: string, locationPayload: PUPPET.
 }
 
 export async function sendFileMessage (contactId: string, file: FileBoxInterface, suggestion?: UserSuggestionItem[]) {
-  const fileItem = await uploadFile(file, true)
+  const fileItem = await uploadFile(file)
 
   sendMessage(contactId, {
     fileId: fileItem.fileTid,
@@ -151,7 +151,11 @@ export function sendMessage (contactId: string, msg: MessageItem) {
     smsContent: 'puppet-walnut-gateway', // 消息回落时的消息 内容， smsSupported为 true时，本字段有 效且 不能为空。
     smsSupported: true, // 是否转短信 true为 转 false 不转 默认 false
     storeSupported: false, // 是否离线存储。 false:不存也不重 试，true:存，缺省 true
-
+  }).then(res => {
+    log.verbose('res', res.data)
+    return res.data
+  }).catch(error => {
+    log.verbose('error', error)
   })
 }
 

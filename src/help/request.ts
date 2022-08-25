@@ -7,6 +7,14 @@ import type { FileItem } from './struct.js'
 import dayjs from 'dayjs'
 import sha256 from 'crypto-js/sha256.js'
 import request from 'request'
+import imagemin from 'imagemin'
+import imageminJpegtran from 'imagemin-jpegtran'
+import imageminPngquant from 'imagemin-pngquant'
+import imageminMozjpeg from 'imagemin-mozjpeg'
+// @ts-ignore
+import imageminGiflossy from 'imagemin-giflossy'
+import { FileBox } from 'file-box'
+import fs from 'fs'
 
 const headers = {
   'Content-Type': 'application/json',
@@ -72,8 +80,24 @@ export function updateToken () {
   })
 }
 
-export async function uploadFile (file: FileBoxInterface, isSingle?: boolean): Promise<FileItem> {
+export async function uploadFile (file: FileBoxInterface): Promise<FileItem> {
   const stream = await file.toStream()
+  const buffer = await file.toBuffer()
+  const isImage = file.mediaType.includes('image')
+  const miniBuffer = await imagemin.buffer(buffer, {
+    plugins: [
+      imageminGiflossy({ lossy: 80 }),
+      imageminMozjpeg({ quality: 10 }),
+      imageminJpegtran(),
+      imageminPngquant({
+        quality: [0, 0.05],
+      }),
+    ],
+  })
+  const miniFileName = dayjs().valueOf() + 'mini' + file.name
+  const miniFile = FileBox.fromBuffer(miniBuffer, miniFileName)
+  await miniFile.toFile(miniFileName)
+  const miniStream = await FileBox.fromFile(miniFileName).toStream()
   const options = {
     formData: {
       file: {
@@ -86,9 +110,9 @@ export async function uploadFile (file: FileBoxInterface, isSingle?: boolean): P
       thumbnail: {
         options: {
           contentType: null,
-          filename: file.name,
+          filename: miniFile.name,
         },
-        value: isSingle ? '' : stream,
+        value: !isImage ? '' : miniStream,
       },
     },
     headers: {
@@ -108,6 +132,7 @@ export async function uploadFile (file: FileBoxInterface, isSingle?: boolean): P
         fileTid: fileInfo?.fileTid,
         thumbnailTid: fileInfo?.thumbnailTid,
       })
+      fs.rmSync(miniFileName)
     })
   })
 }
